@@ -56,7 +56,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="index_files/libs/clipboard/clipboard.min.js"></script>
@@ -74,7 +94,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <style>
 
       .quarto-title-block .quarto-title-banner {
-        background: teal;
+        background: #dec807;
       }
 </style>
 <script src="index_files/libs/kePrint-0.0.1/kePrint.js"></script>
@@ -231,6 +251,7 @@ window.Quarto = {
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2) </span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+<p><span class="citation" data-cites="ggplot2-2 agricolae usethis gh">(<a href="#ref-ggplot2-2" role="doc-biblioref">Wickham 2016</a>; <a href="#ref-agricolae" role="doc-biblioref">Mendiburu 2023</a>; <a href="#ref-usethis" role="doc-biblioref">Wickham et&nbsp;al. 2025</a>; <a href="#ref-gh" role="doc-biblioref">Bryan y Wickham 2025</a>)</span></p>
 </section>
 <section id="distribución-normal" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> .Distribución Normal</h1>
@@ -1471,7 +1492,7 @@ c)  43.77297</code></pre>
 <p>Una analogía popular es la de los dados. La distribución de probabilidad de un solo dado es uniforme (cada número tiene la misma probabilidad). Sin embargo, si lanzas muchos dados y sumas sus resultados, la distribución de esas sumas se aproximará a una campana, con los resultados centrales (la media) siendo mucho más probables que los extremos.</p>
 <p><strong>Puntos Clave del Teorema</strong></p>
 <p><strong>Forma de la Distribución de Muestreo</strong>: La distribución de las medias de la muestra se vuelve normal, sin importar si la población original era normal, sesgada, uniforme o de cualquier otra forma.</p>
-<p><strong>Tamaño de la Muestra (<span class="math inline">n</span>)</strong>: La aproximación a la normalidad es más precisa a medida que el tamaño de la muestra (<span class="math inline">n</span>) aumenta. Generalmente, una muestra de <span class="math inline">n \geq 30</span> es considerada suficiente para que la aproximación sea válida.</p>
+<p><strong>Tamaño de la Muestra (</strong><span class="math inline">n</span>): La aproximación a la normalidad es más precisa a medida que el tamaño de la muestra (<span class="math inline">n</span>) aumenta. Generalmente, una muestra de <span class="math inline">n \geq 30</span> es considerada suficiente para que la aproximación sea válida.</p>
 <p><strong>Relación con la Media de la Población:</strong> La media de la distribución de muestreo de las medias (<span class="math inline">\mu_{\bar{x}}</span>) es igual a la media de la población (<span class="math inline">\mu</span>):</p>
 <p><span class="math display">\mu_{\bar{x}} = \mu</span></p>
 <p><strong>Relación con la Desviación Estándar de la Población:</strong> La desviación estándar de la distribución de muestreo de las medias, llamada error estándar (<span class="math inline">\sigma_{\bar{x}}</span>), es igual a la desviación estándar de la población (<span class="math inline">\sigma</span>) dividida por la raíz cuadrada del tamaño de la muestra (<span class="math inline">n</span>):</p>
@@ -1807,9 +1828,23 @@ c)  43.77297</code></pre>
 <p></p><div style="width: 100% ; height: 400px ; text-align: center; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;" class="muted well">Shiny applications not supported in static R Markdown documents</div><p></p>
 </div>
 </div>
+
 </section>
 
-</main>
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">Referencias</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-gh" class="csl-entry" role="listitem">
+Bryan, Jennifer, y Hadley Wickham. 2025. <span>«gh: ’GitHub’ ’API’»</span>. <a href="https://doi.org/10.32614/CRAN.package.gh">https://doi.org/10.32614/CRAN.package.gh</a>.
+</div>
+<div id="ref-agricolae" class="csl-entry" role="listitem">
+Mendiburu, Felipe de. 2023. <span>«agricolae: Statistical Procedures for Agricultural Research»</span>. <a href="https://doi.org/10.32614/CRAN.package.agricolae">https://doi.org/10.32614/CRAN.package.agricolae</a>.
+</div>
+<div id="ref-ggplot2-2" class="csl-entry" role="listitem">
+Wickham, Hadley. 2016. <span>«ggplot2: Elegant Graphics for Data Analysis»</span>. <a href="https://ggplot2.tidyverse.org">https://ggplot2.tidyverse.org</a>.
+</div>
+<div id="ref-usethis" class="csl-entry" role="listitem">
+Wickham, Hadley, Jennifer Bryan, Malcolm Barrett, y Andy Teucher. 2025. <span>«usethis: Automate Package and Project Setup»</span>. <a href="https://doi.org/10.32614/CRAN.package.usethis">https://doi.org/10.32614/CRAN.package.usethis</a>.
+</div>
+</div></section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {

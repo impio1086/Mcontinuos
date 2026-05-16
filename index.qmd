@@ -6,7 +6,7 @@ author:  # Información sobre los autores
   - name: Adriana Alexandra López Gongora <br> Miranda López Ceballos <br> Gabriel Conde Herrera  # Nombres de los autores
     affiliation: "Escuela Superior de Administración Pública"  # Afiliación
     affiliation-url: "https://www.esap.edu.co/"  # URL de la universidad
-title-block-banner: "teal"  # Color del banner de título
+title-block-banner: "#dec807"  # Color del banner de título
 lang: es  # Idioma del documento
 format:
   html:  # Formato de salida en HTML
@@ -43,6 +43,7 @@ knitr:
     fig.width: 6
     fig.height: 6
     out.width: "70%"
+bibliography: references.bib
 ---
 
 ```{=html}
@@ -90,6 +91,8 @@ library(RColorBrewer)
 
 library(ggplot2) 
 ```
+
+[@ggplot2-2; @agricolae; @usethis; @gh]
 
 # .Distribución Normal
 
@@ -424,7 +427,7 @@ $f(x; k) = \frac{1}{2^{k/2} \Gamma\left(\frac{k}{2}\right)} x^{\frac{k}{2}-1} e^
 
 Usos principales en la estadística
 
-La $\chi^2$  es fundamental en estadística inferencial. 
+La $\chi^2$ es fundamental en estadística inferencial.
 
 Algunos de sus usos:
 
@@ -458,11 +461,11 @@ ggplot(df, aes(x = x, y = dens, color = k)) +
 
 Para una distribución chi-cuadrada encuentre:
 
-a. $\chi^2_{0.02}$ cuando $v = 18$.
+a.  $\chi^2_{0.02}$ cuando $v = 18$.
 
-b. $\chi^2_{0.10}$ cuando $v = 9$.
+b.  $\chi^2_{0.10}$ cuando $v = 9$.
 
-c. $\chi^2_{0.05}$ cuando $v = 30$
+c.  $\chi^2_{0.05}$ cuando $v = 30$
 
 **Solución Incisos**
 
@@ -477,10 +480,10 @@ c <- qchisq(0.05, df = 30, lower.tail = FALSE)
 cat("Valores hallados:\n")
 cat("a) ", a, "\nb) ", b, "\nc) ", c)
 ```
+
 Generación de Gráficas por Función
 
 ::: panel-tabset
-
 ## Código Gráfica
 
 ```{r}
@@ -526,25 +529,24 @@ g2
 
 ## Gráfica C
 
-#| label: grafica-c
+#\| label: grafica-c
 
 ```{r}
 #| label: grafica-c
 g3 <- grafico_chi(df = 30, alpha = 0.05, critico = c, titulo = "Distribución Chi-cuadrado (c)")
 g3
 ```
-
 :::
 
 **Ejercicios 2**
 
 Para una distribución chi-cuadrada encuentre $\chi^2_{\alpha}$ tal que:
 
-a. $P(X^2 > \chi^2_{\alpha}) = 0.97$ cuando $v = 6$.
+a.  $P(X^2 > \chi^2_{\alpha}) = 0.97$ cuando $v = 6$.
 
-b. $P(X^2 > \chi^2_{\alpha}) = 0.01$ cuando $v = 22$.
+b.  $P(X^2 > \chi^2_{\alpha}) = 0.01$ cuando $v = 22$.
 
-c. $P(42.980 < X^2 < \chi^2_{\alpha}) = 0.035$ cuando $v = 28$
+c.  $P(42.980 < X^2 < \chi^2_{\alpha}) = 0.035$ cuando $v = 28$
 
 **Solución Incisos**
 
@@ -578,7 +580,6 @@ cat("c) Valor crítico =", round(c_new, 4), "\n")
 Representación Gráfica
 
 ::: panel-tabset
-
 ## Gráfica A
 
 ```{r}
@@ -588,6 +589,7 @@ grafico_chi(df = 6, alpha = 0.97, critico = a_new, titulo = "Chi-cuadrado Ej 2 (
 ```
 
 ## Gráfica B
+
 ```{r}
 #| label: grafica-new-b
 grafico_chi(df = 22, alpha = 0.01, critico = b_new, titulo = "Chi-cuadrado Ej 2 (b)")
@@ -613,7 +615,6 @@ ggplot(data_c, aes(x = x, y = y)) +
   theme_minimal()
 
 ```
-
 :::
 
 # .Distribución T Student
@@ -663,13 +664,13 @@ ggplot(df_t, aes(x = x, y = dens, color = factor(df), group = df)) +
 
 Encuentre las siguientes probabilidades utilizando la distribución t de Student:
 
-a. $P(T < 1.895)$ cuando $v = 10$.
+a.  $P(T < 1.895)$ cuando $v = 10$.
 
-b. $P(T > 1.742)$ cuando $v = 20$.
+b.  $P(T > 1.742)$ cuando $v = 20$.
 
-c. $P(-1.645 < T < 2.315)$ cuando $v = 15$.
+c.  $P(-1.645 < T < 2.315)$ cuando $v = 15$.
 
-d. $P(T > -1.985)$ cuando $v = 14$.
+d.  $P(T > -1.985)$ cuando $v = 14$.
 
 **Solución de Incisos**
 
@@ -707,7 +708,6 @@ tabla_t %>%
   column_spec(1, bold = T, border_right = T) %>%
   column_spec(4, bold = T, color = "white", background = "#09363d")
 ```
-
 
 Código
 
@@ -753,7 +753,6 @@ t_d <- pt(-1.985, df = 14, lower.tail = FALSE)
 ```
 
 ::: panel-tabset
-
 ## Gráfica A
 
 ```{r}
@@ -788,13 +787,13 @@ En este ejercicio, dada una muestra de tamaño $n=30$, trabajamos con $v = 29$ g
 
 Cuando trabajas con muestras pequeñas (generalmente $n < 30$ o $30$) y no conoces la desviación estándar de la población, se debe utilizar la t de Student.
 
-Aquí las razones técnicas por las que es t-Student:Tamaño de la muestra ($n=30$): 
+Aquí las razones técnicas por las que es t-Student:Tamaño de la muestra ($n=30$):
 
 Al ser una muestra de 30, se calculan los grados de libertad como $v = n - 1 = 29$.
 
 Valores de referencia: Si te fijas en los números que da el ejercicio (como $1.725$ o $2.415$), estos son valores típicos que se encuentran en la tabla de la t de Student para 29 grados de libertad.
 
-Código 
+Código
 
 ```{r}
 #| label: calculos-ejercicio-4
@@ -824,7 +823,6 @@ cat("c) El valor de k es:", round(k_c, 4), "\n")
 ```
 
 ::: panel-tabset
-
 ## Gráfica A
 
 ```{r}
@@ -857,7 +855,7 @@ plot_t_final(df = v_df, region = "between", value1 = -k_c, value2 = k_c,
 
 La distribución F, también conocida como F de Fisher-Snedecor, es una distribución de probabilidad continua que surge a partir de la razón entre dos variables aleatorias chi-cuadrado normalizadas por sus grados de libertad.
 
-**Definición formal** 
+**Definición formal**
 
 Si:
 
@@ -865,14 +863,13 @@ $X \sim \chi^2_{v_1}$ (una chi-cuadrado con $v_1$ grados de libertad),$Y \sim \c
 
 Entonces la variable:
 
-$$F = \frac{X/v_1}{Y/v_2}$$ 
-Sigue una distribución F con $(v_1, v_2)$ grados de libertad.
+$$F = \frac{X/v_1}{Y/v_2}$$ Sigue una distribución F con $(v_1, v_2)$ grados de libertad.
 
 **Propiedades principales**:
 
-1. Soporte: $F > 0$, es decir, solo toma valores positivos.
+1.  Soporte: $F > 0$, es decir, solo toma valores positivos.
 
-2. Asimétrica: La curva de densidad es sesgada a la derecha, especialmente para pocos grados de libertad.
+2.  Asimétrica: La curva de densidad es sesgada a la derecha, especialmente para pocos grados de libertad.
 
 3.Esperanza matemática:
 
@@ -921,15 +918,15 @@ ggplot(df, aes(x = x, y = y, color = label)) +
 
 Para una distribución $F$, se solicita encontrar los valores críticos para distintos niveles de significancia ($\alpha$) y grados de libertad ($v_1, v_2$):
 
-a. $f_{0.05}$ con $v_1 = 9$ y $v_2 = 18$.
+a.  $f_{0.05}$ con $v_1 = 9$ y $v_2 = 18$.
 
-b. $f_{0.01}$ con $v_1 = 12$ y $v_2 = 10$.
+b.  $f_{0.01}$ con $v_1 = 12$ y $v_2 = 10$.
 
-c. $f_{0.10}$ con $v_1 = 20$ y $v_2 = 25$.
+c.  $f_{0.10}$ con $v_1 = 20$ y $v_2 = 25$.
 
-d. $f_{0.95}$ con $v_1 = 16$ y $v_2 = 30$.
+d.  $f_{0.95}$ con $v_1 = 16$ y $v_2 = 30$.
 
-e. $f_{0.99}$ con $v_1 = 35$ y $v_2 = 14$.
+e.  $f_{0.99}$ con $v_1 = 35$ y $v_2 = 14$.
 
 **Solución de Incisos**
 
@@ -969,7 +966,6 @@ tabla_f %>%
 **Gráficas**
 
 ::: panel-tabset
-
 ## Gráfica A
 
 ```{r}
@@ -1076,7 +1072,7 @@ Una analogía popular es la de los dados. La distribución de probabilidad de un
 
 **Forma de la Distribución de Muestreo**: La distribución de las medias de la muestra se vuelve normal, sin importar si la población original era normal, sesgada, uniforme o de cualquier otra forma.
 
-**Tamaño de la Muestra ($n$)**: La aproximación a la normalidad es más precisa a medida que el tamaño de la muestra ($n$) aumenta. Generalmente, una muestra de $n \geq 30$ es considerada suficiente para que la aproximación sea válida.
+**Tamaño de la Muestra (**$n$): La aproximación a la normalidad es más precisa a medida que el tamaño de la muestra ($n$) aumenta. Generalmente, una muestra de $n \geq 30$ es considerada suficiente para que la aproximación sea válida.
 
 **Relación con la Media de la Población:** La media de la distribución de muestreo de las medias ($\mu_{\bar{x}}$) es igual a la media de la población ($\mu$):
 
@@ -1252,6 +1248,7 @@ ggplot(df_medias_exp, aes(x = media)) +
   theme_minimal()
 
 ```
+
 **Simulador (Shuny)**
 
 ```{r}
@@ -1369,5 +1366,3 @@ server <- function(input, output) {
 
 shinyApp(ui = ui, server = server)
 ```
-
-
