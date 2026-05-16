@@ -1,48 +1,44 @@
 ---
-title: "MODELOS CONTINUOS DE PROBABILIDAD"  # Título principal del documento
-subtitle: "TALLER 2"  # Subtítulo del documento
-date: today  # Fecha actual en formato español
-author:  # Información sobre los autores
-  - name: Adriana Alexandra López Gongora <br> Miranda López Ceballos <br> Gabriel Conde Herrera  # Nombres de los autores
-    affiliation: "Escuela Superior de Administración Pública"  # Afiliación
-    affiliation-url: "https://www.esap.edu.co/"  # URL de la universidad
-title-block-banner: "#dec807"  # Color del banner de título
-lang: es  # Idioma del documento
+title: "MODELOS CONTINUOS DE PROBABILIDAD"
+subtitle: "TALLER 2"
+date: today
+
+author:
+  - name: Adriana Alexandra López Gongora <br> Miranda López Ceballos <br> Gabriel Conde Herrera
+    affiliation: "Escuela Superior de Administración Pública"
+    affiliation-url: "https://www.esap.edu.co/"
+
+title-block-banner: "#dec807"
+lang: es
+
 format:
-  html:  # Formato de salida en HTML
+  html:
     filters:
-      - shinylive  # FILTRO AGREGADO PARA EL SIMULADOR INTERACTIVO
-    page-layout: full  # Diseño de página completo
-    fontsize: 12pt  # Tamaño de fuente
-    toc: true  # Tabla de contenido activa
-    toc-location: right  # TOC a la derecha
-    number-sections: true  # Numeración de secciones
-    code-fold: true  # Código oculto por defecto
-    code-summary: "Ver código"  # Texto para desplegar código
-    html-math-method: katex  # Renderizado de fórmulas LaTeX
-    smooth-scroll: true  # Desplazamiento suave
-    link-external-icon: true  # Ícono en enlaces externos
-    link-external-newwindow: true  # Abrir en nueva ventana
-    citations-hover: true  # Desplegar citas al pasar el mouse
-    footnotes-hover: true  # Desplegar notas al pie
-    theme: "dark"  # Tema oscuro de fondo
-    highlight-style: "Monokai"  # Estilo de resaltado del código
-    code-overflow: "scroll"  # Scroll para código largo
-    favicon: "favicon.ico"  # Ícono de pestaña
-    background-color: "#B3DDF2"  # Fondo azul baby
-    text-align: justify  # Texto justificado
-    color: "#333333"  # Color del texto
-    link-color: "#09363d"  # Color de enlaces
-    heading-color: "#09363d"  # Color de encabezados
-editor: visual  # Editor visual de RStudio
+      - shinylive
+    page-layout: full
+    fontsize: 12pt
+    toc: true
+    toc-location: right
+    number-sections: true
+    code-fold: true
+    code-summary: "Ver código"
+    html-math-method: katex
+    theme: dark
+    highlight-style: monokai
+    background-color: "#B3DDF2"
+    text-align: justify
+    color: "#333333"
+    link-color: "#09363d"
+    heading-color: "#09363d"
+
+editor: visual
+
 knitr:
-  opts_chunk:  # Opciones globales de chunks
+  opts_chunk:
     message: false
     warning: false
     fig.align: "center"
-    fig.width: 6
-    fig.height: 6
-    out.width: "70%"
+
 bibliography: references.bib
 ---
 
@@ -87,8 +83,7 @@ if (!require(agricolae)) {
 }
 library(agricolae)
 
-library(RColorBrewer) 
-
+library(RColorBrewer)
 library(ggplot2) 
 ```
 
@@ -1251,55 +1246,55 @@ ggplot(df_medias_exp, aes(x = media)) +
 
 **Simulador (Shuny)**
 
+
 ```{r}
-#| standalone: true
-#| viewerHeight: 800
+#| viewerHeight: 900
 
 library(shiny)
 library(ggplot2)
 
-# --- INTERFAZ DE USUARIO ---
+# --- INTERFAZ ---
 ui <- fluidPage(
-  headerPanel("Explorador del Teorema del Límite Central"),
+  headerPanel("Simulador Interactivo del TLC"),
   sidebarLayout(
     sidebarPanel(
-      selectInput("dist", "Seleccione la Distribución:",
-                  choices = c("Binomial", "Poisson", "Hipergeométrica", "Uniforme", "Exponencial")),
-      hr(),
-      sliderInput("n", "Tamaño de la muestra (n):", min = 2, max = 100, value = 30),
-      sliderInput("reps", "Número de repeticiones (R):", min = 1000, max = 15000, value = 10000, step = 1000),
-      actionButton("run", "Ejecutar Simulación", icon = icon("play"), 
-                   style="color: #fff; background-color: #09363d; border-color: #09363d")
+      wellPanel(
+        h4("Configuración de Simulación"),
+        selectInput("dist", "1. Distribución de Población:",
+                    choices = c("Binomial", "Poisson", "Hipergeométrica", "Uniforme", "Exponencial")),
+        hr(),
+        sliderInput("n", "2. Tamaño de Muestra (n):", min = 2, max = 100, value = 30),
+        sliderInput("reps", "3. Número de Muestras (R):", min = 1000, max = 10000, value = 5000, step = 1000),
+        br(),
+        actionButton("run", "Ejecutar Simulación", icon = icon("sync"),
+                     style="color: #fff; background-color: #09363d; border-color: #09363d; width: 100%")
+      )
     ),
     
     mainPanel(
       tabsetPanel(
-        tabPanel("Población Original", 
+        tabPanel("1. Situación Inicial (Población)", 
                  plotOutput("plotPob"),
-                 helpText("Esta es la distribución base de la población.")),
+                 wellPanel(helpText("Visualización de la distribución original antes del muestreo."))),
         
-        tabPanel("Distribución de Medias (TLC)", 
+        tabPanel("2. Resultado del TLC (Medias)", 
                  plotOutput("plotTLC"),
-                 helpText("La curva roja representa la distribución normal teórica."))
+                 wellPanel(helpText("Distribución de las medias obtenidas. La línea roja indica la Normal teórica.")))
       )
     )
   )
 )
 
-# --- LÓGICA DEL SERVIDOR ---
+# --- SERVIDOR ---
 server <- function(input, output) {
   
-  # Definición de la paleta de colores sincronizada
   colores <- reactive({
     switch(input$dist,
-           "Binomial"        = "#90EE90", # Verde claro
-           "Poisson"         = "#87CEEB", # Azul cielo
-           "Hipergeométrica" = "#FFB347", # Naranja
-           "Uniforme"        = "#BA55D3", # Púrpura
-           "Exponencial"     = "#20B2AA") # Verde mar
+           "Binomial"        = "#90EE90", "Poisson"         = "#87CEEB", 
+           "Hipergeométrica" = "#FFB347", "Uniforme"        = "#BA55D3", 
+           "Exponencial"     = "#20B2AA")
   })
 
-  # Generar datos de la población
   getPobData <- reactive({
     set.seed(123)
     dist <- input$dist
@@ -1310,15 +1305,13 @@ server <- function(input, output) {
     if(dist == "Exponencial")    return(rexp(5000, rate = 0.5))
   })
 
-  # Gráfico de la Población
   output$plotPob <- renderPlot({
     datos <- data.frame(x = getPobData())
     color_f <- colores()
-    
     p <- ggplot(datos, aes(x = x)) +
-      labs(title = paste("Distribución", input$dist, "Original"),
-           x = "Valores de la Variable", y = "Frecuencia") +
-      theme_minimal(base_size = 14)
+      labs(title = paste("Estado de la Población:", input$dist),
+           x = "Valor", y = "Frecuencia") +
+      theme_minimal(base_size = 15)
     
     if(input$dist %in% c("Binomial", "Poisson", "Hipergeométrica")) {
       p + geom_bar(fill = color_f, color = "white", alpha = 0.8)
@@ -1327,12 +1320,8 @@ server <- function(input, output) {
     }
   })
 
-  # Simulación de las Medias Muestrales
   sim_data <- eventReactive(input$run, {
-    dist <- input$dist
-    n <- input$n
-    R <- input$reps
-    
+    dist <- input$dist; n <- input$n; R <- input$reps
     set.seed(123)
     medias <- replicate(R, {
       muestra <- switch(dist,
@@ -1346,23 +1335,27 @@ server <- function(input, output) {
     data.frame(media = medias)
   }, ignoreNULL = FALSE)
 
-  # Gráfico del TLC
   output$plotTLC <- renderPlot({
     df <- sim_data()
     color_f <- colores()
-    
     ggplot(df, aes(x = media)) +
       geom_histogram(aes(y = after_stat(density)), bins = 35, 
                      fill = color_f, color = "white", alpha = 0.7) +
       stat_function(fun = dnorm, 
                     args = list(mean = mean(df$media), sd = sd(df$media)), 
-                    color = "red", linetype = "dashed", linewidth = 1.2) +
-      labs(title = paste("Medias Muestrales (n =", input$n, ")"),
-           subtitle = "La línea roja muestra la tendencia a la Normalidad",
-           x = "Valor de la Media", y = "Densidad") +
-      theme_minimal(base_size = 14)
+                    color = "red", linetype = "dashed", linewidth = 1.5) +
+      labs(title = "Resultado: Distribución de Medias",
+           subtitle = paste("Basado en muestras de tamaño n =", input$n),
+           x = "Media Muestral", y = "Densidad") +
+      theme_minimal(base_size = 15)
   })
 }
 
 shinyApp(ui = ui, server = server)
+
 ```
+
+
+
+
+
