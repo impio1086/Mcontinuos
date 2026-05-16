@@ -90,6 +90,11 @@ div.csl-indent {
 <script src="index_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="index_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="index_files/libs/bootstrap/bootstrap-2775fb8795583b54b98e5d375c84f5af.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<meta name="shinylive:serviceworker_dir" content=".">
+<script src="index_files/libs/quarto-contrib/shinylive-0.10.8/shinylive/load-shinylive-sw.js" type="module"></script>
+<script src="index_files/libs/quarto-contrib/shinylive-0.10.8/shinylive/run-python-blocks.js" type="module"></script>
+<link href="index_files/libs/quarto-contrib/shinylive-0.10.8/shinylive/shinylive.css" rel="stylesheet">
+<link href="index_files/libs/quarto-contrib/shinylive-quarto-css/shinylive-quarto.css" rel="stylesheet">
 <style>
 
       .quarto-title-block .quarto-title-banner {
@@ -1707,7 +1712,7 @@ c)  43.77297</code></pre>
 </div>
 </div>
 </div>
-<p><strong>Simulador (Shuny)</strong></p>
+<p><strong>Simulador (Shiny)</strong></p>
 <div class="cell" data-layout-align="center" data-viewerheight="900">
 <details class="code-fold">
 <summary>Ver código</summary>
@@ -1818,6 +1823,44 @@ c)  43.77297</code></pre>
 <p></p><div style="width: 100% ; height: 400px ; text-align: center; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;" class="muted well">Shiny applications not supported in static R Markdown documents</div><p></p>
 </div>
 </div>
+<pre class="shinylive-r" data-engine="r"><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| viewerHeight: 600
+
+library(shiny)
+
+# 1. AQUÍ VA TU INTERFAZ (UI)
+ui &lt;- fluidPage(
+  titlePanel("Simulador Interactivo del TLC"),
+  sidebarLayout(
+    sidebarPanel(
+      h4("Configuración de Simulación"),
+      selectInput("dist", "1. Distribución de Población:", 
+                  choices = c("Poisson", "Hipergeométrica", "Exponencial", "Binomial")),
+      sliderInput("n", "2. Tamaño de Muestra (n):", min = 2, max = 100, value = 30),
+      sliderInput("reps", "3. Número de Muestras (R):", min = 1000, max = 10000, value = 5000, step = 1000)
+    ),
+    mainPanel(
+      plotOutput("plotPoblacion")
+    )
+  )
+)
+
+# 2. AQUÍ VA TU LÓGICA DEL SERVIDOR
+server &lt;- function(input, output, session) {
+  output$plotPoblacion &lt;- renderPlot({
+    # Aquí va tu código actual para generar el gráfico verde de las barras
+    # Ejemplo rápido:
+    if(input$dist == "Binomial") {
+       hist(rbinom(input$reps, input$n, 0.5), col = "lightgreen", main = "Estado de la Población")
+    }
+  })
+}
+
+# 3. ESTO ES OBLIGATORIO PARA SHINYLIVE
+shinyApp(ui = ui, server = server)</code></pre>
 
 </section>
 

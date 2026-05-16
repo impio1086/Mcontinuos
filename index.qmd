@@ -1244,8 +1244,7 @@ ggplot(df_medias_exp, aes(x = media)) +
 
 ```
 
-**Simulador (Shuny)**
-
+**Simulador (Shiny)**
 
 ```{r}
 #| viewerHeight: 900
@@ -1356,6 +1355,41 @@ shinyApp(ui = ui, server = server)
 ```
 
 
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 600
 
+library(shiny)
 
+# 1. AQUÍ VA TU INTERFAZ (UI)
+ui <- fluidPage(
+  titlePanel("Simulador Interactivo del TLC"),
+  sidebarLayout(
+    sidebarPanel(
+      h4("Configuración de Simulación"),
+      selectInput("dist", "1. Distribución de Población:", 
+                  choices = c("Poisson", "Hipergeométrica", "Exponencial", "Binomial")),
+      sliderInput("n", "2. Tamaño de Muestra (n):", min = 2, max = 100, value = 30),
+      sliderInput("reps", "3. Número de Muestras (R):", min = 1000, max = 10000, value = 5000, step = 1000)
+    ),
+    mainPanel(
+      plotOutput("plotPoblacion")
+    )
+  )
+)
+
+# 2. AQUÍ VA TU LÓGICA DEL SERVIDOR
+server <- function(input, output, session) {
+  output$plotPoblacion <- renderPlot({
+    # Aquí va tu código actual para generar el gráfico verde de las barras
+    # Ejemplo rápido:
+    if(input$dist == "Binomial") {
+       hist(rbinom(input$reps, input$n, 0.5), col = "lightgreen", main = "Estado de la Población")
+    }
+  })
+}
+
+# 3. ESTO ES OBLIGATORIO PARA SHINYLIVE
+shinyApp(ui = ui, server = server)
+```
 
