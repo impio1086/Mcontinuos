@@ -98,7 +98,7 @@ div.csl-indent {
 <style>
 
       .quarto-title-block .quarto-title-banner {
-        background: #fceb65;
+        background: #e6c805;
       }
 </style>
 <script src="index_files/libs/kePrint-0.0.1/kePrint.js"></script>
@@ -1728,7 +1728,7 @@ ui &lt;- fluidPage(
     sidebarPanel(
       h4("Configuración de Simulación"),
       selectInput("dist", "1. Distribución de Población:", 
-                  choices = c("Poisson", "Hipergeométrica", "Exponencial", "Binomial")),
+                  choices = c("Poisson", "Hipergeométrica", "Exponencial", "Binomial", "Uniforme")),
       sliderInput("n", "2. Tamaño de Muestra (n):", min = 2, max = 100, value = 30),
       sliderInput("reps", "3. Número de Muestras (R):", min = 1000, max = 10000, value = 5000, step = 1000)
     ),
@@ -1757,7 +1757,8 @@ server &lt;- function(input, output, session) {
       "Poisson"         = list(base = "#4CAF50", line = "#1B5E20"), # Tonos Verdes
       "Hipergeométrica" = list(base = "#FF9800", line = "#E65100"), # Tonos Naranjas
       "Exponencial"     = list(base = "#9C27B0", line = "#4A148C"), # Tonos Morados
-      "Binomial"        = list(base = "#2196F3", line = "#0D47A1")  # Tonos Azules
+      "Binomial"        = list(base = "#2196F3", line = "#0D47A1"), # Tonos Azules
+      "Uniforme"        = list(base = "#E91E63", line = "#880E4F")  # Tonos Rosa/Fucsia
     )
     
     if (input$dist == "Poisson") {
@@ -1779,6 +1780,11 @@ server &lt;- function(input, output, session) {
       N_val &lt;- 20; M_minus_N &lt;- 30; k_val &lt;- 10
       situacion_inicial &lt;- rhyper(R, m = N_val, n = M_minus_N, k = k_val)
       matriz_muestras &lt;- matrix(rhyper(R * n, m = N_val, n = M_minus_N, k = k_val), nrow = R, ncol = n)
+      
+    } else if (input$dist == "Uniforme") {
+      min_val &lt;- 0; max_val &lt;- 10
+      situacion_inicial &lt;- runif(R, min = min_val, max = max_val)
+      matriz_muestras &lt;- matrix(runif(R * n, min = min_val, max = max_val), nrow = R, ncol = n)
     }
     
     medias_muestrales &lt;- rowMeans(matriz_muestras)
