@@ -8,7 +8,7 @@ author:
     affiliation: "Escuela Superior de Administración Pública"
     affiliation-url: "https://www.esap.edu.co/"
 
-title-block-banner: "#dec807"
+title-block-banner: "#fceb65"
 lang: es
 
 format:
@@ -1246,122 +1246,13 @@ ggplot(df_medias_exp, aes(x = media)) +
 
 **Simulador (Shiny)**
 
-```{r}
-#| viewerHeight: 900
-
-library(shiny)
-library(ggplot2)
-
-# --- INTERFAZ ---
-ui <- fluidPage(
-  headerPanel("Simulador Interactivo del TLC"),
-  sidebarLayout(
-    sidebarPanel(
-      wellPanel(
-        h4("Configuración de Simulación"),
-        selectInput("dist", "1. Distribución de Población:",
-                    choices = c("Binomial", "Poisson", "Hipergeométrica", "Uniforme", "Exponencial")),
-        hr(),
-        sliderInput("n", "2. Tamaño de Muestra (n):", min = 2, max = 100, value = 30),
-        sliderInput("reps", "3. Número de Muestras (R):", min = 1000, max = 10000, value = 5000, step = 1000),
-        br(),
-        actionButton("run", "Ejecutar Simulación", icon = icon("sync"),
-                     style="color: #fff; background-color: #09363d; border-color: #09363d; width: 100%")
-      )
-    ),
-    
-    mainPanel(
-      tabsetPanel(
-        tabPanel("1. Situación Inicial (Población)", 
-                 plotOutput("plotPob"),
-                 wellPanel(helpText("Visualización de la distribución original antes del muestreo."))),
-        
-        tabPanel("2. Resultado del TLC (Medias)", 
-                 plotOutput("plotTLC"),
-                 wellPanel(helpText("Distribución de las medias obtenidas. La línea roja indica la Normal teórica.")))
-      )
-    )
-  )
-)
-
-# --- SERVIDOR ---
-server <- function(input, output) {
-  
-  colores <- reactive({
-    switch(input$dist,
-           "Binomial"        = "#90EE90", "Poisson"         = "#87CEEB", 
-           "Hipergeométrica" = "#FFB347", "Uniforme"        = "#BA55D3", 
-           "Exponencial"     = "#20B2AA")
-  })
-
-  getPobData <- reactive({
-    set.seed(123)
-    dist <- input$dist
-    if(dist == "Binomial")       return(rbinom(5000, size = 10, prob = 0.4))
-    if(dist == "Poisson")        return(rpois(5000, lambda = 3))
-    if(dist == "Hipergeométrica") return(rhyper(5000, m = 20, n = 30, k = 10))
-    if(dist == "Uniforme")       return(runif(5000, min = 0, max = 10))
-    if(dist == "Exponencial")    return(rexp(5000, rate = 0.5))
-  })
-
-  output$plotPob <- renderPlot({
-    datos <- data.frame(x = getPobData())
-    color_f <- colores()
-    p <- ggplot(datos, aes(x = x)) +
-      labs(title = paste("Estado de la Población:", input$dist),
-           x = "Valor", y = "Frecuencia") +
-      theme_minimal(base_size = 15)
-    
-    if(input$dist %in% c("Binomial", "Poisson", "Hipergeométrica")) {
-      p + geom_bar(fill = color_f, color = "white", alpha = 0.8)
-    } else {
-      p + geom_histogram(fill = color_f, color = "white", alpha = 0.8, bins = 30)
-    }
-  })
-
-  sim_data <- eventReactive(input$run, {
-    dist <- input$dist; n <- input$n; R <- input$reps
-    set.seed(123)
-    medias <- replicate(R, {
-      muestra <- switch(dist,
-                        "Binomial"        = rbinom(n, size = 10, prob = 0.4),
-                        "Poisson"         = rpois(n, lambda = 3),
-                        "Hipergeométrica" = rhyper(n, m = 20, n = 30, k = 10),
-                        "Uniforme"        = runif(n, min = 0, max = 10),
-                        "Exponencial"     = rexp(n, rate = 0.5))
-      mean(muestra)
-    })
-    data.frame(media = medias)
-  }, ignoreNULL = FALSE)
-
-  output$plotTLC <- renderPlot({
-    df <- sim_data()
-    color_f <- colores()
-    ggplot(df, aes(x = media)) +
-      geom_histogram(aes(y = after_stat(density)), bins = 35, 
-                     fill = color_f, color = "white", alpha = 0.7) +
-      stat_function(fun = dnorm, 
-                    args = list(mean = mean(df$media), sd = sd(df$media)), 
-                    color = "red", linetype = "dashed", linewidth = 1.5) +
-      labs(title = "Resultado: Distribución de Medias",
-           subtitle = paste("Basado en muestras de tamaño n =", input$n),
-           x = "Media Muestral", y = "Densidad") +
-      theme_minimal(base_size = 15)
-  })
-}
-
-shinyApp(ui = ui, server = server)
-
-```
-
-
 ```{shinylive-r}
 #| standalone: true
-#| viewerHeight: 600
+#| viewerHeight: 750
 
 library(shiny)
 
-# 1. AQUÍ VA TU INTERFAZ (UI)
+# 1. INTERFAZ DE USUARIO (UI)
 ui <- fluidPage(
   titlePanel("Simulador Interactivo del TLC"),
   sidebarLayout(
@@ -1373,23 +1264,109 @@ ui <- fluidPage(
       sliderInput("reps", "3. Número de Muestras (R):", min = 1000, max = 10000, value = 5000, step = 1000)
     ),
     mainPanel(
-      plotOutput("plotPoblacion")
+      tabsetPanel(
+        tabPanel("1. Situación Inicial (Población)", plotOutput("plotPoblacion")),
+        tabPanel("2. Resultado del TLC (Medias)", plotOutput("plotMedias"))
+      )
     )
   )
 )
 
-# 2. AQUÍ VA TU LÓGICA DEL SERVIDOR
+# 2. LÓGICA DEL SERVIDOR (SERVER)
 server <- function(input, output, session) {
-  output$plotPoblacion <- renderPlot({
-    # Aquí va tu código actual para generar el gráfico verde de las barras
-    # Ejemplo rápido:
-    if(input$dist == "Binomial") {
-       hist(rbinom(input$reps, input$n, 0.5), col = "lightgreen", main = "Estado de la Población")
+  
+  # Generador de datos reactivo
+  datos_simulados <- reactive({
+    R <- input$reps
+    n <- input$n
+    
+    matriz_muestras <- matrix(0, nrow = R, ncol = n)
+    situacion_inicial <- c()
+    
+    # Definición de colores según la distribución seleccionada
+    colores <- switch(input$dist,
+      "Poisson"         = list(base = "#4CAF50", line = "#1B5E20"), # Tonos Verdes
+      "Hipergeométrica" = list(base = "#FF9800", line = "#E65100"), # Tonos Naranjas
+      "Exponencial"     = list(base = "#9C27B0", line = "#4A148C"), # Tonos Morados
+      "Binomial"        = list(base = "#2196F3", line = "#0D47A1")  # Tonos Azules
+    )
+    
+    if (input$dist == "Poisson") {
+      lambda_val <- 4
+      situacion_inicial <- rpois(R, lambda = lambda_val)
+      matriz_muestras <- matrix(rpois(R * n, lambda = lambda_val), nrow = R, ncol = n)
+      
+    } else if (input$dist == "Exponencial") {
+      rate_val <- 0.5
+      situacion_inicial <- rexp(R, rate = rate_val)
+      matriz_muestras <- matrix(rexp(R * n, rate = rate_val), nrow = R, ncol = n)
+      
+    } else if (input$dist == "Binomial") {
+      size_val <- 10; p_val <- 0.5
+      situacion_inicial <- rbinom(R, size = size_val, prob = p_val)
+      matriz_muestras <- matrix(rbinom(R * n, size = size_val, prob = p_val), nrow = R, ncol = n)
+      
+    } else if (input$dist == "Hipergeométrica") {
+      N_val <- 20; M_minus_N <- 30; k_val <- 10
+      situacion_inicial <- rhyper(R, m = N_val, n = M_minus_N, k = k_val)
+      matriz_muestras <- matrix(rhyper(R * n, m = N_val, n = M_minus_N, k = k_val), nrow = R, ncol = n)
     }
+    
+    medias_muestrales <- rowMeans(matriz_muestras)
+    
+    list(poblacion = situacion_inicial, medias = medias_muestrales, cols = colores)
+  })
+  
+  # GRÁFICO 1: Situación Inicial
+  output$plotPoblacion <- renderPlot({
+    res <- datos_simulados()
+    
+    hist(res$poblacion, 
+         col = res$cols$base, 
+         border = "white",
+         main = paste("Estado de la Población:", input$dist),
+         xlab = "Valor", 
+         ylab = "Frecuencia",
+         las = 1)
+  })
+  
+  # GRÁFICO 2: Teorema del Límite Central (Distribución de Medias con Campana de Gauss)
+  output$plotMedias <- renderPlot({
+    res <- datos_simulados()
+    
+    # Creamos el histograma en escala de probabilidad/densidad para poder superponer la curva
+    h <- hist(res$medias, 
+              col = res$cols$base, 
+              border = "white",
+              main = paste("Distribución de las Medias Muestrales (n =", input$n, ")"),
+              xlab = "Valor de la Media", 
+              ylab = "Densidad",
+              prob = TRUE,
+              las = 1)
+    
+    # Calcular los parámetros de la curva normal de los datos simulados
+    media_teorica <- mean(res$medias)
+    sd_teorica <- sd(res$medias)
+    
+    # Generar un eje X continuo e hilado para dibujar la campana de Gauss perfecta
+    x_eje <- seq(min(res$medias), max(res$medias), length = 200)
+    y_gauss <- dnorm(x_eje, mean = media_teorica, sd = sd_teorica)
+    
+    # Dibujar la campana de Gauss encima del histograma
+    lines(x_eje, y_gauss, col = res$cols$line, lwd = 3.5, lty = 1)
+    
+    # Una pequeña leyenda informativa dentro del gráfico
+    legend("topright", 
+           legend = c("Histograma de Medias", "Campana de Gauss (Normal)"), 
+           fill = c(res$cols$base, NA), 
+           border = c("white", NA),
+           lty = c(NA, 1), 
+           lwd = c(NA, 3.5),
+           col = c(NA, res$cols$line),
+           bty = "n")
   })
 }
 
-# 3. ESTO ES OBLIGATORIO PARA SHINYLIVE
+# 3. ARRANCAR LA APP
 shinyApp(ui = ui, server = server)
 ```
-
